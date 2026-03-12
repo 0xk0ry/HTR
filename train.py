@@ -248,8 +248,7 @@ def main():
             if args.use_masking:
                 s_ctc, loss_tcm = compute_losses(
                     args, model, tcm_head, image, batch[1], batch_size, criterion, converter,
-                    nb_iter, args.ctc_lambda, args.tcm_lambda, stoi,
-                    mask_mode='span', mask_ratio=0.4, max_span_length=8, use_masking=True
+                    nb_iter, args.ctc_lambda, args.tcm_lambda, stoi, mask_ratio=0.4, max_span_length=8, use_masking=True
                 )
             else:
                 loss, loss_ctc, loss_tcm = compute_losses(
@@ -271,8 +270,7 @@ def main():
             if args.use_masking:
                 loss2, loss_ctc, loss_tcm = compute_losses(
                     args, model, tcm_head, image, batch[1], batch_size, criterion, converter,
-                    nb_iter, args.ctc_lambda, args.tcm_lambda, stoi,
-                    mask_mode='span', mask_ratio=0.4, max_span_length=8, use_masking=True
+                    nb_iter, args.ctc_lambda, args.tcm_lambda, stoi, mask_ratio=0.4, max_span_length=8, use_masking=True
                 )
             else:
                 loss2, loss_ctc, loss_tcm = compute_losses(
