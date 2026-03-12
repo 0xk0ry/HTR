@@ -123,6 +123,9 @@ def main():
         from model import resnet18 as resnet18_model
         model = resnet18_model.create_model(
             nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    elif backbone == 'resnet18_convtext':
+        model = htr_convtext.create_model_resnet(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
     else:
         model = htr_convtext.create_model(
             nb_cls=args.nb_cls, img_size=args.img_size[::-1])
@@ -169,9 +172,9 @@ def main():
     d_vis = model.embed_dim
 
     if args.tcm_enable:
-        if backbone != 'htr_convtext':
+        if backbone not in ('htr_convtext', 'resnet18_convtext'):
             logger.warning(
-                f"TCM requires htr_convtext backbone (got '{backbone}'); disabling TCM.")
+                f"TCM requires htr_convtext or resnet18_convtext backbone (got '{backbone}'); disabling TCM.")
             tcm_head = None
         else:
             tcm_head = TCMHead(d_vis=d_vis, vocab_size_tcm=vocab_size_tcm, pad_id=pad_id,

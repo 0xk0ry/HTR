@@ -4,10 +4,10 @@
 
 BASE_ARGS="--dataset iam --tcm-enable --use-masking \
   --nb-cls 80 \
-  --data-path ./data/iam/lines/ \
-  --train-data-list ./data/iam/train.ln \
-  --val-data-list   ./data/iam/val.ln \
-  --test-data-list  ./data/iam/test.ln \
+  --data-path /kaggle/input/iam-vt-lines/lines/ \
+  --train-data-list /kaggle/input/iam-vt-lines/train.ln \
+  --val-data-list   /kaggle/input/iam-vt-lines/val.ln \
+  --test-data-list  /kaggle/input/iam-vt-lines/test.ln \
   --max-lr 1e-3 --warm-up-iter 1000 --weight-decay 0.05 \
   --train-bs 32 --val-bs 8 --total-iter 100001 \
   --mask-ratio 0.4 --max-span-length 8 --attn-mask-ratio 0.1 \

@@ -31,7 +31,7 @@ python train.py $BASE_ARGS \
   --backbone htr_vt \
   --exp-name "ablation_no_convtext"
 
-# (D) w/o MVP Block — ResNet18 patch embed + plain ViT encoder
+# (D) w/o MVP Block — ResNet18 patch embed + ConvTextBlock encoder
 python train.py $BASE_ARGS \
-  --backbone resnet18 \
+  --backbone resnet18_convtext \
   --exp-name "ablation_no_mvp"
