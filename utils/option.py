@@ -83,13 +83,13 @@ def get_args_parser() -> argparse.Namespace:
     # ---------------------------------------------------------------------
     model = parser.add_argument_group('Model & Encoder')
     model.add_argument('--model-type', default='ctc', type=str, choices=['ctc', 'encoder_decoder'],
-                      help='Model family to train/use')
+                       help='Model family to train/use')
     model.add_argument('--cos-temp', default=8, type=int,
-                      help='Cosine-similarity classifier temperature')
+                       help='Cosine-similarity classifier temperature')
     model.add_argument('--proj', default=8, type=float,
-                      help='Projection dimension or scaling for classifier head')
+                       help='Projection dimension or scaling for classifier head')
     model.add_argument('--attn-mask-ratio', default=0., type=float,
-                      help='Attention drop-key mask ratio')
+                       help='Attention drop-key mask ratio')
 
     # ---------------------------------------------------------------------
     # Masking Strategy
@@ -103,17 +103,6 @@ def get_args_parser() -> argparse.Namespace:
                       help='Max length for individual span masks')
     mask.add_argument('--spacing', default=0, type=int,
                       help='Minimum spacing between two span masks')
-    # Tri-masking schedule ratios
-    mask.add_argument('--r-rand', dest='r_rand', default=0.6, type=float,
-                      help='Ratio for random masking in tri-masking schedule')
-    mask.add_argument('--r-block', dest='r_block', default=0.6, type=float,
-                      help='Ratio for block masking in tri-masking schedule')
-    mask.add_argument('--block-span', dest='block_span', default=4, type=int,
-                      help='Block span length for block masking')
-    mask.add_argument('--r-span', dest='r_span', default=0.4, type=float,
-                      help='Ratio for span masking in tri-masking schedule')
-    mask.add_argument('--max-span', dest='max_span', default=8, type=int,
-                      help='Max span length for span masking')
 
     # ---------------------------------------------------------------------
     # Data Augmentations
@@ -209,15 +198,15 @@ def get_args_parser() -> argparse.Namespace:
     # ---------------------------------------------------------------------
     tcm = parser.add_argument_group('TCM (Textual Context Module)')
     tcm.add_argument('--tcm-enable', action='store_true', default=False,
-                    help='Enable Textual Context Module (TCM)')
+                     help='Enable Textual Context Module (TCM)')
     tcm.add_argument('--tcm-lambda', default=1.0, type=float,
-                    help='TCM loss weight (λ2 in the paper)')
+                     help='TCM loss weight (λ2 in the paper)')
     tcm.add_argument('--ctc-lambda', default=0.1, type=float,
-                    help='CTC loss weight (λ1 in the paper)')
+                     help='CTC loss weight (λ1 in the paper)')
     tcm.add_argument('--tcm-sub-len', default=5, type=int,
-                    help='TCM context sub-string length')
+                     help='TCM context sub-string length')
     tcm.add_argument('--tcm-warmup-iters', default=0, type=int,
-                    help='Warm-up iterations before activating TCM (0 = start immediately)')
+                     help='Warm-up iterations before activating TCM (0 = start immediately)')
 
     # ---------------------------------------------------------------------
     # Checkpointing & Pretrained Weights
