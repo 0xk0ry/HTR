@@ -259,6 +259,11 @@ def main():
                     nb_iter, args.ctc_lambda, args.tcm_lambda, stoi,
                     mask_mode='span', mask_ratio=0.4, max_span_length=8, use_masking=True
                 )
+            else:
+                loss2, loss_ctc, loss_tcm = compute_losses(
+                    args, model, tcm_head, image, batch[1], batch_size, criterion, converter,
+                    nb_iter, args.ctc_lambda, args.tcm_lambda, stoi, use_masking=False
+                )
             (loss2 / accum_steps).backward()
         optimizer.second_step(zero_grad=True)
         model.zero_grad()
