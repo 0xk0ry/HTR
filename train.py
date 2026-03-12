@@ -114,8 +114,18 @@ def main():
 
     torch.backends.cudnn.benchmark = True
 
-    model = htr_convtext.create_model(
-        nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    backbone = getattr(args, 'backbone', 'htr_convtext')
+    if backbone == 'htr_vt':
+        from model import htr_vt
+        model = htr_vt.create_model(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    elif backbone == 'resnet18':
+        from model import resnet18 as resnet18_model
+        model = resnet18_model.create_model(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    else:
+        model = htr_convtext.create_model(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
 
     total_param = sum(p.numel() for p in model.parameters())
     logger.info('total_param is {}'.format(total_param))
@@ -159,9 +169,14 @@ def main():
     d_vis = model.embed_dim
 
     if args.tcm_enable:
-        tcm_head = TCMHead(d_vis=d_vis, vocab_size_tcm=vocab_size_tcm, pad_id=pad_id,
-                           sub_str_len=args.tcm_sub_len).cuda()
-        tcm_head.train()
+        if backbone != 'htr_convtext':
+            logger.warning(
+                f"TCM requires htr_convtext backbone (got '{backbone}'); disabling TCM.")
+            tcm_head = None
+        else:
+            tcm_head = TCMHead(d_vis=d_vis, vocab_size_tcm=vocab_size_tcm, pad_id=pad_id,
+                               sub_str_len=args.tcm_sub_len).cuda()
+            tcm_head.train()
     else:
         tcm_head = None
 

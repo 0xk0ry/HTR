@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from timm.models.vision_transformer import Mlp, DropPath
 from timm.layers import LayerScale
 import numpy as np
-from model import resnet18
+from model import mvp
 from functools import partial
 import random
 import re
@@ -266,7 +266,7 @@ class HTR_ConvText(nn.Module):
     ):
         super().__init__()
 
-        self.patch_embed = resnet18.ResNet18(embed_dim)
+        self.patch_embed = mvp.MVP(embed_dim)
         self.embed_dim = embed_dim
         self.max_rel_pos = int(max_seq_len)
         self.mask_token = nn.Parameter(torch.zeros(1, 1, embed_dim))

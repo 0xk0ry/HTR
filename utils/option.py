@@ -84,6 +84,12 @@ def get_args_parser() -> argparse.Namespace:
     model = parser.add_argument_group('Model & Encoder')
     model.add_argument('--model-type', default='ctc', type=str, choices=['ctc', 'encoder_decoder'],
                        help='Model family to train/use')
+    model.add_argument('--backbone', default='htr_convtext', type=str,
+                       choices=['htr_convtext', 'htr_vt', 'resnet18'],
+                       help='Feature extractor + encoder architecture: '
+                            'htr_convtext = MVP + ConvTextBlock (full model); '
+                            'htr_vt = MVP + plain ViT Block (w/o ConvText); '
+                            'resnet18 = ResNet18 + plain ViT Block (w/o MVP)')
     model.add_argument('--cos-temp', default=8, type=int,
                        help='Cosine-similarity classifier temperature')
     model.add_argument('--proj', default=8, type=float,
