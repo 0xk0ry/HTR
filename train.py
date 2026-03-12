@@ -246,7 +246,7 @@ def main():
             text, length = converter.encode(batch[1])
             batch_size = image.size(0)
             if args.use_masking:
-                s_ctc, loss_tcm = compute_losses(
+                loss, loss_ctc, loss_tcm = compute_losses(
                     args, model, tcm_head, image, batch[1], batch_size, criterion, converter,
                     nb_iter, args.ctc_lambda, args.tcm_lambda, stoi, mask_ratio=0.4, max_span_length=8, use_masking=True
                 )
