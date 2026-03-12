@@ -172,9 +172,9 @@ def main():
     d_vis = model.embed_dim
 
     if args.tcm_enable:
-        if backbone not in ('htr_convtext', 'resnet18_convtext'):
+        if backbone not in ('htr_convtext', 'resnet18_convtext', 'htr_vt'):
             logger.warning(
-                f"TCM requires htr_convtext or resnet18_convtext backbone (got '{backbone}'); disabling TCM.")
+                f"TCM requires a backbone with return_features support (got '{backbone}'); disabling TCM.")
             tcm_head = None
         else:
             tcm_head = TCMHead(d_vis=d_vis, vocab_size_tcm=vocab_size_tcm, pad_id=pad_id,

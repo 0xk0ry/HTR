@@ -230,28 +230,39 @@ class MaskedAutoencoderViT(nn.Module):
         """
         mask = self.generate_span_mask(x, mask_ratio, max_span_length)
         x_masked = x * mask + (1 - mask) * self.mask_token
-        return x_masked
+        # masked_positions: 1 where token is masked, 0 where visible
+        masked_positions = (1.0 - mask.squeeze(-1)).clamp(0.0, 1.0)
+        return x_masked, masked_positions
 
-    def forward(self, x, mask_ratio=0.0, max_span_length=1, use_masking=False):
+    def forward(self, x, mask_ratio=0.0, max_span_length=1, use_masking=False,
+                return_features=False, return_mask=False):
         # embed patches
         x = self.layer_norm(x)
         x = self.patch_embed(x)
         b, c, w, h = x.shape
         x = x.view(b, c, -1).permute(0, 2, 1)
         # masking: length -> length * mask_ratio
+        masked_positions = None
         if use_masking:
-            x = self.random_masking(x, mask_ratio, max_span_length)
+            x, masked_positions = self.random_masking(
+                x, mask_ratio, max_span_length)
         x = x + self.pos_embed
         # apply Transformer blocks
         for blk in self.blocks:
             x = blk(x)
 
-        x = self.norm(x)
+        feats = self.norm(x)
         # To CTC Loss
-        x = self.head(x)
-        x = self.layer_norm(x)
+        logits = self.head(feats)
+        logits = self.layer_norm(logits)
 
-        return x
+        if return_features and return_mask:
+            return logits, feats, masked_positions
+        if return_features:
+            return logits, feats
+        if return_mask:
+            return logits, masked_positions
+        return logits
 
 
 def create_model(nb_cls, img_size, **kwargs):
