@@ -1,14 +1,12 @@
 import torch
 
 import os
-import re
 import json
 import valid
 from utils import utils
 from utils import option
 from data import dataset
 from model import htr_convtext
-from collections import OrderedDict
 
 
 def main():
@@ -20,24 +18,30 @@ def main():
     os.makedirs(args.save_dir, exist_ok=True)
     logger = utils.get_logger(args.save_dir)
 
-    model = htr_convtext.create_model(
-        nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    backbone = getattr(args, 'backbone', 'htr_convtext')
+    if backbone == 'htr_vt':
+        from model import htr_vt
+        model = htr_vt.create_model(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    elif backbone == 'resnet18':
+        from model import resnet18 as resnet18_model
+        model = resnet18_model.create_model(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    elif backbone == 'resnet18_convtext':
+        model = htr_convtext.create_model_resnet(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
+    else:
+        model = htr_convtext.create_model(
+            nb_cls=args.nb_cls, img_size=args.img_size[::-1])
 
     pth_path = args.resume
     logger.info('loading HWR checkpoint from {}'.format(pth_path))
+    if pth_path is None or not os.path.isfile(pth_path):
+        raise FileNotFoundError(
+            f"Checkpoint path is invalid: {pth_path}. Please pass --resume <checkpoint_path>.")
 
-    ckpt = torch.load(pth_path, map_location='cpu', weights_only=False)
-    model_dict = OrderedDict()
-    pattern = re.compile('module.')
-
-    for k, v in ckpt['state_dict_ema'].items():
-        if re.search("module", k):
-            model_dict[re.sub(pattern, '', k)] = v
-        else:
-            model_dict[k] = v
-
-    model.load_state_dict(model_dict, strict=True)
-    model = model.cuda()
+    utils.load_checkpoint(model, None, None, pth_path, logger)
+    model = model.to(device)
 
     logger.info('Loading test loader...')
     train_dataset = dataset.myLoadDS(
