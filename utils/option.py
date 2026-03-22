@@ -209,9 +209,9 @@ def get_args_parser() -> argparse.Namespace:
                      help='Enable Textual Context Module (TCM)')
     tcm.add_argument('--tcm-lambda', default=1.0, type=float,
                      help='TCM loss weight (λ2 in the paper)')
-    tcm.add_argument('--ctc-lambda', default=0.1, type=float,
+    tcm.add_argument('--ctc-lambda', default=0.3, type=float,
                      help='CTC loss weight (λ1 in the paper)')
-    tcm.add_argument('--tcm-sub-len', default=5, type=int,
+    tcm.add_argument('--tcm-sub-len', default=3, type=int,
                      help='TCM context sub-string length')
     tcm.add_argument('--tcm-warmup-iters', default=0, type=int,
                      help='Warm-up iterations before activating TCM (0 = start immediately)')
